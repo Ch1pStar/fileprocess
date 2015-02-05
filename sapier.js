@@ -141,16 +141,21 @@ function processFile(filePath) {
         throw e;
       } 
     var fileContents = data.toString();
-
+    if(fileContents[0] == ' ' || fileContents[0] == '\t'){
+      throw new Error('A line cannot start with a space or a tab');
+    }
     var rawLines = fileContents.trim().split(/\n+/gmi);
     for (var i = 0; i < rawLines.length; i++) {
-      var c = rawLines[i].trim().split(/\s+/gmi);
-      for (var j = 0; j < c.length; j++) {
-        if(c[j] == ''){
-          c.splice(j, 1);
+      if(rawLines[i][0] == ' ' || rawLines[i][0] == '\t'){
+        throw new Error('A line cannot start with a space or a tab');
+      }
+      var line = rawLines[i].trim().split(/\s+/gmi);
+      for (var j = 0; j < line.length; j++) {
+        if(line[j] == ''){
+          line.splice(j, 1);
         }
       };
-      lines.push(c);
+      lines.push(line);
     };
   });
 }
@@ -210,19 +215,17 @@ function validateData(lines) {
     var line = lines[i];
     for (var j = 0; j < line.length; j++) {
       var number = line[j];
-      for (var k = 0; k < number.length; k++) {
-        var digit = number[k];
-        if(k == 0 && digit == 0){
-          var errorMessage = 'line '+(i+1) +', number '+(j+1)+', '+
-          'starts with 0';
-          throw new Error(errorMessage);        
-        }
-        if(isNaN(digit)){
-          var errorMessage = 'line '+(i+1) +', number '+(j+1)+', '+
-          'character "'+digit+'"('+(k+1)+') is not allowed';    
-          throw new Error(errorMessage);        
-        }
-      };
+      var numCharMatched = number.match(/\d+/gmi);
+      if(numCharMatched.length > 1){
+        var errorMessage = 'line '+(i+1) +', number '+(j+1)+', '+
+          'character "'+number[numCharMatched[0].length]+'"('+(numCharMatched[0].length)+') is not allowed';   
+        throw new Error(errorMessage);   
+      }
+      if(number[0]==0){
+        var errorMessage = 'line '+(i+1) +', number '+(j+1)+', '+
+        'starts with 0';
+        throw new Error(errorMessage);        
+      }
     };
   };
 }
