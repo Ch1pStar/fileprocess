@@ -4,6 +4,12 @@ import java.io.*;
 
 public class Main {
 
+
+  /**
+   * Entry point of the application,
+   * takes user input from the standart input(System.in)
+   * and calls the appropriate FileProcessor methods
+   */
   public static void main(String[] args) {
     BufferedReader stdin = new BufferedReader(
               new InputStreamReader(System.in));
