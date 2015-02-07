@@ -16,7 +16,7 @@ process.stdin.on('readable', function() {
       processFile(filePath);
     }else if(input == 'a'){
       try{
-        validateData(lines);
+        validateData();
       }catch(e){
         console.error(e.message);
         process.exit(1);
@@ -111,7 +111,7 @@ process.stdin.on('readable', function() {
       numberSwapOptionSet = true;
       console.log("Enter line and number indices:");
     }else if(input == 'd'){
-      saveToFile(lines, filePath);
+      saveToFile(filePath);
     }else if(input == 'e'){
       crudOptionSet = true;
       console.log('Enter operation("create", "read", "update" or "delete") '+
@@ -135,6 +135,12 @@ process.stdin.on('readable', function() {
   }
 });
 
+
+/**
+ * Reads and parses data from the given file name resource
+ * @param  {String} filePath Path to the file resource to be read
+ * @return {void}
+ */
 function processFile(filePath) {
   fs.readFile(filePath, function(e, data){
       if (e){
@@ -160,9 +166,15 @@ function processFile(filePath) {
   });
 }
 
-function saveToFile(lines, filePath) {
+/**
+ * Validates and persists the lines global object content state
+ * to the given file resource
+ * @param  {String} filePath  Path to the file resource the data will be saved to
+ * @return {void}
+ */
+function saveToFile(filePath) {
   try{
-    validateData(lines);
+    validateData();
   }catch(e){
    console.error(e.message);
    process.exit(1);
@@ -188,6 +200,12 @@ function saveToFile(lines, filePath) {
   });
 }
 
+/**
+ * Swaps the values of the array at the given indices
+ * @param  {Integer} a The first index
+ * @param  {Integer} b The second index
+ * @return {Array}   The Array object
+ */
 Array.prototype.swap = function (a,b) {
   if(typeof this[a] != 'undefined' && typeof this[b] != 'undefined'){
     var t = this[a];
@@ -199,6 +217,14 @@ Array.prototype.swap = function (a,b) {
   return this;
 }
 
+/**
+ * Swaps the values of two cells in a 2d matrix
+ * @param  {Integer} a First column index
+ * @param  {Integer} b First row index
+ * @param  {Integer} c Second column index
+ * @param  {Integer} d Second row index
+ * @return {Array}   The Array object
+ */
 Array.prototype.swap2d = function (a,b,c,d) {
   if(typeof this[a][b] != 'undefined' && typeof this[c][d] != 'undefined'){
     var t = this[a][b];
@@ -210,7 +236,13 @@ Array.prototype.swap2d = function (a,b,c,d) {
   return this;
 }
 
-function validateData(lines) {
+
+/**
+ * Validates the the contents of the global lines object state
+ * 
+ * @return {void}
+ */
+function validateData() {
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
     for (var j = 0; j < line.length; j++) {
